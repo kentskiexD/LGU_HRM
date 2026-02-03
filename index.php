@@ -4,76 +4,97 @@
 <meta charset="UTF-8">
 <title>MFO / PAP Dynamic Form</title>
 
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
 <style>
 body {
-    font-family: Arial;
-    padding: 20px;
+    background: #f8f9fa;
 }
 
-.indicator {
-    border: 1px solid #ccc;
+.indicator-card {
+    border: 1px solid #ced4da;
     margin-bottom: 8px;
 }
 
 .indicator-header {
-    background: #f1f1f1;
-    padding: 8px;
+    background: #e9ecef;
+    padding: 8px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 .indicator-title {
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.indicator-actions button {
-    margin-left: 5px;
-    padding: 3px 8px;
-    font-size: 12px;
+    font-weight: 600;
 }
 
 .indicator-body {
     display: none;
-    padding: 10px;
-    background: #fafafa;
-}
-
-.row {
-    display: flex;
-    gap: 6px;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 6px;
+    padding: 12px;
+    background: #ffffff;
 }
 
 textarea {
     resize: vertical;
 }
+
+.btn-xs {
+    padding: 2px 8px;
+    font-size: 12px;
+}
 </style>
 </head>
 
 <body>
+    <div class="text-center mb-4">
+    <h4 class="fw-bold text-uppercase">
+        Office Performance Commitment and Review
+    </h4>
+    <small class="text-muted">(OPCR)</small>
+</div>
 
-<h2>MFO / PAP PERFORMANCE FORM</h2>
+<div class="container mt-4 mb-5">
 
-<form method="POST" action="process_form.php">
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-    <input type="text" name="mfo_pap" placeholder="MFO / PAP" required>
+            <h4 class="mb-3">MFO / PAP Performance Form</h4>
 
-    <h3>Success Indicators</h3>
+            <form method="POST" action="process_form.php">
 
-    <div id="indicator-container"></div>
+                <!-- MFO / PAP -->
+                <div class="mb-3">
+                    <input type="text" name="mfo_pap" class="form-control"
+                           placeholder="MFO / PAP" required>
+                </div>
 
-    <button type="button" onclick="addIndicator()">➕ Add Success Indicator</button>
-    <br><br>
-    <button type="submit">Submit</button>
+                <h6 class="mb-2">Success Indicators</h6>
 
-</form>
+                <div id="indicator-container"></div>
+
+              <button type="button"
+        class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+        onclick="addIndicator()">
+    <i class="bi bi-plus-circle"></i>
+    Add Success Indicator
+</button>
+
+                <hr>
+
+                <button type="submit" class="btn btn-success">
+                    Submit
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
 
 <script>
 let indicatorCount = 0;
@@ -84,50 +105,78 @@ function addIndicator() {
     const container = document.getElementById("indicator-container");
 
     const block = document.createElement("div");
-    block.className = "indicator";
+    block.className = "indicator-card";
 
     block.innerHTML = `
-        <div class="indicator-header">
-            <div class="indicator-title" onclick="toggleIndicator(this)">
-                ▶ Success Indicator ${indicatorCount}
-            </div>
-
-            <div class="indicator-actions">
-                <button type="button" onclick="deleteIndicator(this)">🗑 Delete</button>
-            </div>
+        <div class="indicator-header" onclick="toggleIndicator(this)">
+            <span class="indicator-title">
+<i class="bi bi-arrow-down-square-fill text-success"></i> Success Indicator ${indicatorCount}</span>
+            <button type="button" class="btn btn-danger btn-xs"
+                    onclick="event.stopPropagation(); deleteIndicator(this)">
+                 <i class="bi bi-trash-fill"></i>
+            </button>
         </div>
 
         <div class="indicator-body">
-            <div class="row">
-                <input type="number" name="indicator_number[]" placeholder="SI No." required>
-                <input type="text" name="indicator_text[]" placeholder="Success Indicator Description" required>
+
+            <div class="row g-2 mb-2">
+                <div class="col-md-2">
+                    <input type="number" name="indicator_number[]" class="form-control"
+                           placeholder="SI No." required>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" name="indicator_text[]" class="form-control"
+                           placeholder="Success Indicator (Targets + Measures)" required>
+                </div>
             </div>
 
-            <input type="text" name="accountable[]" placeholder="Individual / Division Accountable" required>
-
-            <div class="row">
-                <input type="text" name="actual_ratio[]" placeholder="Actual (200/20)" required>
-                <input type="text" name="actual_desc[]" placeholder="Actual Description" required>
+            <div class="mb-2">
+                <input type="text" name="accountable[]" class="form-control"
+                       placeholder="Individuals / Divisions Accountable" required>
             </div>
 
-            <div class="row">
-                <input type="number" step="0.01" name="rating_q[]" placeholder="Q" required>
-                <input type="number" step="0.01" name="rating_e[]" placeholder="E" required>
-                <input type="number" step="0.01" name="rating_t[]" placeholder="T" required>
-                <input type="number" step="0.01" name="rating_a[]" placeholder="A" required>
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <input type="text" name="actual_ratio[]" class="form-control"
+                           placeholder="Actual (e.g. 200/20)" required>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" name="actual_desc[]" class="form-control"
+                           placeholder="Actual Accomplishments / Expenses" required>
+                </div>
             </div>
 
-            <textarea name="remarks[]" rows="2" placeholder="Remarks" required></textarea>
+            <div class="row g-2 mb-2">
+                <div class="col">
+                    <input type="number" step="0.01" name="rating_q[]" class="form-control"
+                           placeholder="Q" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="0.01" name="rating_e[]" class="form-control"
+                           placeholder="E" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="0.01" name="rating_t[]" class="form-control"
+                           placeholder="T" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="0.01" name="rating_a[]" class="form-control"
+                           placeholder="A" required>
+                </div>
+            </div>
+
+            <textarea name="remarks[]" rows="2" class="form-control"
+                      placeholder="Remarks" required></textarea>
+
         </div>
     `;
 
     container.appendChild(block);
 }
 
-function toggleIndicator(el) {
-    const indicator = el.closest(".indicator");
-    const body = indicator.querySelector(".indicator-body");
-    const title = indicator.querySelector(".indicator-title");
+function toggleIndicator(header) {
+    const body = header.nextElementSibling;
+    const title = header.querySelector(".indicator-title");
 
     const isOpen = body.style.display === "block";
     body.style.display = isOpen ? "none" : "block";
@@ -138,7 +187,7 @@ function toggleIndicator(el) {
 
 function deleteIndicator(btn) {
     if (confirm("Remove this success indicator?")) {
-        btn.closest(".indicator").remove();
+        btn.closest(".indicator-card").remove();
     }
 }
 </script>
