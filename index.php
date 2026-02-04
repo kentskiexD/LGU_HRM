@@ -1,9 +1,8 @@
 <?php
-require_once __DIR__ . '/../auth/session_check.php';
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/settings.php';
-require_once __DIR__ . '/../layouts/header.php';
-require_once __DIR__ . '/../layouts/sidebar.php';
+// require_once __DIR__ . '/../config/db.php';
+// require_once __DIR__ . '/../config/settings.php';
+// require_once __DIR__ . '/../layouts/header.php';
+// require_once __DIR__ . '/../layouts/sidebar.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,6 +11,12 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     <meta charset="UTF-8">
     <title>MFO / PAP Dynamic Form</title>
 
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -19,10 +24,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        .indicator-card {
-            margin-bottom: 8px;
-        }
-
+        .indicator-card { margin-bottom: 8px; }
         .indicator-header {
             padding: 8px 12px;
             display: flex;
@@ -32,11 +34,7 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             background: #f1f3f5;
             border-radius: 4px;
         }
-
-        .indicator-title {
-            font-weight: 600;
-        }
-
+        .indicator-title { font-weight: 600; }
         .indicator-body {
             display: none;
             padding: 12px;
@@ -45,25 +43,19 @@ require_once __DIR__ . '/../layouts/sidebar.php';
             border-top: none;
             border-radius: 0 0 4px 4px;
         }
-
-        textarea {
-            resize: vertical;
-        }
-
-        .btn-xs {
-            padding: 2px 8px;
-            font-size: 12px;
-        }
+        textarea { resize: vertical; }
+        .btn-xs { padding: 2px 8px; font-size: 12px; }
     </style>
 </head>
+
 
 <body>
 
 <div class="text-center mb-4">
-    <h4 class="fw-bold text-uppercase text-white">
+    <h4 class="fw-bold text-uppercase text-black">
         Office Performance Commitment and Review
     </h4>
-    <small class="text-white">(OPCR)</small>
+    <small class="text-black">(OPCR)</small>
 </div>
 
 <div class="container mt-4 mb-5">
@@ -156,27 +148,7 @@ function addIndicator() {
                 </div>
             </div>
 
-            <div class="row g-2 mb-2">
-                <div class="col">
-                    <input type="number" step="0.01" name="rating_q[]" class="form-control"
-                           placeholder="Q" required>
-                </div>
-                <div class="col">
-                    <input type="number" step="0.01" name="rating_e[]" class="form-control"
-                           placeholder="E" required>
-                </div>
-                <div class="col">
-                    <input type="number" step="0.01" name="rating_t[]" class="form-control"
-                           placeholder="T" required>
-                </div>
-                <div class="col">
-                    <input type="number" step="0.01" name="rating_a[]" class="form-control"
-                           placeholder="A" required>
-                </div>
-            </div>
-
-            <textarea name="remarks[]" rows="2" class="form-control"
-                      placeholder="Remarks" required></textarea>
+            
 
         </div>
     `;
