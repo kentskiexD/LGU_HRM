@@ -1,60 +1,69 @@
+<?php
+require_once __DIR__ . '/../auth/session_check.php';
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/settings.php';
+require_once __DIR__ . '/../layouts/header.php';
+require_once __DIR__ . '/../layouts/sidebar.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>MFO / PAP Dynamic Form</title>
+    <meta charset="UTF-8">
+    <title>MFO / PAP Dynamic Form</title>
 
-<!-- Bootstrap 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-body {
-    background: #f8f9fa;
-}
+    <style>
+        .indicator-card {
+            margin-bottom: 8px;
+        }
 
-.indicator-card {
-    border: 1px solid #ced4da;
-    margin-bottom: 8px;
-}
+        .indicator-header {
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: #f1f3f5;
+            border-radius: 4px;
+        }
 
-.indicator-header {
-    background: #e9ecef;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
+        .indicator-title {
+            font-weight: 600;
+        }
 
-.indicator-title {
-    font-weight: 600;
-}
+        .indicator-body {
+            display: none;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
 
-.indicator-body {
-    display: none;
-    padding: 12px;
-    background: #ffffff;
-}
+        textarea {
+            resize: vertical;
+        }
 
-textarea {
-    resize: vertical;
-}
-
-.btn-xs {
-    padding: 2px 8px;
-    font-size: 12px;
-}
-</style>
+        .btn-xs {
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="text-center mb-4">
-    <h4 class="fw-bold text-uppercase">
+
+<div class="text-center mb-4">
+    <h4 class="fw-bold text-uppercase text-white">
         Office Performance Commitment and Review
     </h4>
-    <small class="text-muted">(OPCR)</small>
+    <small class="text-white">(OPCR)</small>
 </div>
 
 <div class="container mt-4 mb-5">
@@ -76,12 +85,12 @@ textarea {
 
                 <div id="indicator-container"></div>
 
-              <button type="button"
-        class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
-        onclick="addIndicator()">
-    <i class="bi bi-plus-circle"></i>
-    Add Success Indicator
-</button>
+                <button type="button"
+                        class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                        onclick="addIndicator()">
+                    <i class="bi bi-plus-circle"></i>
+                    Add Success Indicator
+                </button>
 
                 <hr>
 
@@ -103,17 +112,18 @@ function addIndicator() {
     indicatorCount++;
 
     const container = document.getElementById("indicator-container");
-
     const block = document.createElement("div");
     block.className = "indicator-card";
 
     block.innerHTML = `
         <div class="indicator-header" onclick="toggleIndicator(this)">
             <span class="indicator-title">
-<i class="bi bi-arrow-down-square-fill text-success"></i> Success Indicator ${indicatorCount}</span>
+                <i class="bi bi-arrow-down-square-fill text-success"></i>
+                Success Indicator ${indicatorCount}
+            </span>
             <button type="button" class="btn btn-danger btn-xs"
-                    onclick="event.stopPropagation(); deleteIndicator(this)">
-                 <i class="bi bi-trash-fill"></i>
+                onclick="event.stopPropagation(); deleteIndicator(this)">
+                <i class="bi bi-trash-fill"></i>
             </button>
         </div>
 
@@ -176,19 +186,32 @@ function addIndicator() {
 
 function toggleIndicator(header) {
     const body = header.nextElementSibling;
-    const title = header.querySelector(".indicator-title");
-
-    const isOpen = body.style.display === "block";
-    body.style.display = isOpen ? "none" : "block";
-    title.innerHTML = isOpen
-        ? title.innerHTML.replace("▼", "▶")
-        : title.innerHTML.replace("▶", "▼");
+    body.style.display = body.style.display === "block" ? "none" : "block";
 }
 
 function deleteIndicator(btn) {
-    if (confirm("Remove this success indicator?")) {
-        btn.closest(".indicator-card").remove();
-    }
+    Swal.fire({
+        title: 'Remove this indicator?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            btn.closest('.indicator-card').remove();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Success indicator removed.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    });
 }
 </script>
 
