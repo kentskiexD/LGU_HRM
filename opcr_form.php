@@ -1,3 +1,20 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "opcr_db"; // change this to your database name
+
+$conn = mysqli_connect($servername, $username, $password, $database);
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// echo "Connected successfully";
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +29,7 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <style>
         .indicator-card { margin-bottom: 10px; }
@@ -56,6 +74,7 @@
 
 <body>
 
+
 <div class="text-center mb-4 mt-3">
     <h4 class="fw-bold text-uppercase text-dark">
         Office Performance Commitment and Review
@@ -69,7 +88,7 @@
 
             <h4 class="mb-3">MFO / PAP Performance Form</h4>
 
-            <form method="POST" action="process_form.php" id="opcrForm">
+            <form method="POST"  action="save_opcr.php" id="opcrForm">
 
                 <div class="mb-3">
                     <input type="text" name="mfo_pap" class="form-control"
@@ -89,7 +108,7 @@
 
                 <hr>
 
-                <button type="submit" class="btn btn-success">
+                <button type="submit" name="submit" class="btn btn-success">
                     Submit
                 </button>
 
@@ -98,21 +117,29 @@
         </div>
     </div>
 </div>
-
 <script>
 let formChanged = false;
+let isSubmitting = false;
 
 /* Track form changes */
 document.addEventListener("input", () => {
-    formChanged = true;
+    if (!isSubmitting) {
+        formChanged = true;
+    }
 });
 
-/* Warn on refresh / exit */
+/* Warn on refresh / exit ONLY if not submitting */
 window.addEventListener("beforeunload", function (e) {
-    if (formChanged) {
+    if (formChanged && !isSubmitting) {
         e.preventDefault();
         e.returnValue = "";
     }
+});
+
+/* Disable warning when submitting */
+document.getElementById("opcrForm").addEventListener("submit", function () {
+    isSubmitting = true;
+    formChanged = false;
 });
 
 /* Toggle indicator body */
@@ -187,7 +214,7 @@ function addIndicator() {
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Actual (eg. 700/500)</label>
+                    <label class="form-label fw-semibold">Actual</label>
                     <input type="text" name="actual_ratio[]" class="form-control"
                            placeholder="eg. 700/500" required>
                 </div>
@@ -207,8 +234,9 @@ function addIndicator() {
 
     container.appendChild(block);
     renumberIndicators();
+    formChanged = true;
 
-    // Open only the newest indicator
+    /* Open only the newest indicator */
     document.querySelectorAll('.indicator-body').forEach(b => b.style.display = 'none');
     block.querySelector('.indicator-body').style.display = 'block';
 }
@@ -228,6 +256,7 @@ function deleteIndicator(btn) {
         if (result.isConfirmed) {
             btn.closest('.indicator-card').remove();
             renumberIndicators();
+            formChanged = true;
 
             Swal.fire({
                 icon: 'success',
@@ -246,5 +275,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
 </body>
 </html>
+
+
+<?php if (isset($_GET['success'])): ?>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success!',
+    text: 'OPCR has been saved successfully.',
+    confirmButtonColor: '#198754'
+}).then(() => {
+    // Remove ?success=1 from the URL
+    const url = new URL(window.location);
+    url.searchParams.delete('success');
+    window.history.replaceState({}, document.title, url.pathname);
+});
+</script>
+<?php endif; ?>
